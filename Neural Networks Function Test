@@ -1,0 +1,53 @@
+from sklearn import datasets
+from matplotlib import pyplot as plt
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPClassifier
+from matplotlib.colors import ListedColormap
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.animation import FuncAnimation
+from matplotlib import colors
+import time
+%matplotlib notebook
+
+#three activation function
+def relu(x):
+    return np.where(x <= 0,0,x)
+
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
+
+def tanh(x):
+    return (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+
+# Generate samples
+X,y= datasets.make_circles(n_samples = 2000, factor=0.3, noise=.1)
+# Dividing the training set and test set
+X, X_test, y, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+# Constructing feature spaces
+c,r = np.mgrid[[slice(X.min() - .5,X.max() + .5,50j)]*2]
+# Iterators
+p = np.c_[c.flat,r.flat]
+# p is the coordinate space
+# Normalization
+%matplotlib inline
+ss = StandardScaler().fit(X)
+X = ss.transform(X)
+p = ss.transform(p)
+X_test = ss.transform(X_test)
+
+#数据可视化
+fig = plt.figure(figsize = (9,3))
+cm_bright = ListedColormap(['#f32b1a','#0c6dea'])
+plt.subplot(121)
+m1 = plt.scatter(*X.T,c = y,cmap = cm_bright,edgecolors='white')
+plt.title('train samples')
+plt.axis('equal')
+plt.subplot(122)
+m2 = plt.scatter(*X_test.T,c = y_test,cmap = cm_bright,edgecolors='white');
+plt.title('test samples')
+plt.axis('equal')
+ax = fig.get_axes()
+plt.colorbar(ax = ax);
+plt.show();
